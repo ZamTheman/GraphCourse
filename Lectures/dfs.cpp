@@ -37,12 +37,12 @@ public:
                 dfs(nbr);
     }
 
-    bool dfs_cycle_detection(int source, int parent) {
+    bool dfs_undirected_graph_cycle_detection(int source, int parent) {
         visited[source] = true;
         for (auto nbr : m[source])
         {
             if (!visited[nbr]) {
-                bool nbrFoundCycle = dfs_cycle_detection(nbr, source);
+                bool nbrFoundCycle = dfs_undirected_graph_cycle_detection(nbr, source);
                 if (nbrFoundCycle)
                     return true;
             }
@@ -52,14 +52,28 @@ public:
 
         return false;
     }
+
+    bool dfs_directed_graph_cycle_detection(int source, vector<int> stack) {
+        visited[source] = true;
+        stack.push_back(source);
+        for (auto node : m[source]) {
+            if (visited[node] && std::find(stack.begin(), stack.end(), node) != stack.end())
+                return true;
+
+            if (dfs_directed_graph_cycle_detection(node, stack))
+                return true;
+        }
+
+        return false;
+    }
 };
 
-bool solve(int n, vector<vector<int>> edges) {
+bool solve(int n, vector<vector<int>> edges, bool directed = false) {
     Graph g;
     for (auto edge : edges)
-        g.addEdge(edge[0], edge[1]);
-        
-    return g.dfs_cycle_detection(edges[0][0], -1);
+        directed ? g.addEdge(edge[0], edge[1], false) : g.addEdge(edge[0], edge[1]);
+
+    return directed ? g.dfs_directed_graph_cycle_detection(n, vector<int> {}) : g.dfs_undirected_graph_cycle_detection(edges[0][0], -1);
 }
 
 int main(){
@@ -99,8 +113,19 @@ int main(){
         { 10, 5 },
         { 4, 6 }
     };
+
+    vector<vector<int>> edges3 {
+        { 0, 4 },
+        { 0, 5 },
+        { 0, 1 },
+        { 1, 2 },
+        { 2, 3 },
+        { 3, 0 },
+        { 5, 4 },
+    };
     
-    cout << solve(n,edges2) << endl;
+    cout << solve(0,edges3,true) << endl;
+
 
     return 0;
 }
