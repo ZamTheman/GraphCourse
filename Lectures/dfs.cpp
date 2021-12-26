@@ -36,6 +36,22 @@ public:
             if (!visited[nbr])
                 dfs(nbr);
     }
+
+    bool dfs_cycle_detection(int source, int parent) {
+        visited[source] = true;
+        for (auto nbr : m[source])
+        {
+            if (!visited[nbr]) {
+                bool nbrFoundCycle = dfs_cycle_detection(nbr, source);
+                if (nbrFoundCycle)
+                    return true;
+            }
+            else if (nbr != parent)
+                return true;
+        }
+
+        return false;
+    }
 };
 
 int main(){
@@ -48,7 +64,14 @@ int main(){
     g.addEdge(4,5);
     g.addEdge(0,4);
     g.addEdge(3,4);
-    g.dfs(1);
+    // g.dfs(1);
+    cout << g.dfs_cycle_detection(1, -1) << endl;
+
+    Graph g1;
+    g1.addEdge(0,1);
+    g1.addEdge(1,2);
+    g1.addEdge(2,3);
+    cout << g1.dfs_cycle_detection(0, -1) << endl;
 
     return 0;
 }
