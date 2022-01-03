@@ -1,3 +1,6 @@
+// Disjoint Set Unition DSU
+// Used to identify cycles in graph
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -17,7 +20,9 @@ public:
         if (parent[i] == -1)
             return i;
 
-        return findSet(parent[i], parent);
+        // Path compression. Every time a node is called it will create a direct parent link to leading node
+        parent[i] = findSet(parent[i], parent); 
+        return parent[i];
     }
 
     void unionSet(int x, int y, unique_ptr<int[]> &parent, unique_ptr<int[]> &rank) {
@@ -67,11 +72,20 @@ public:
 };
 
 int main() {
-    Graph g(4);
+    Graph g(7);
     g.addEdge(0,1);
     g.addEdge(1,2);
     g.addEdge(2,3);
-    //g.addEdge(3,0); // Removing this should make it return 0
+    g.addEdge(0,4);
+    g.addEdge(5,6);
+    g.addEdge(2,5);
+    // g.addEdge(2,6); // Removing this should make it return 0
 
     cout << g.contains_cycle() << endl;
 }
+
+/*
+    0 - 1 - 2 - 3
+    |       |
+    4       5 - 6
+*/
