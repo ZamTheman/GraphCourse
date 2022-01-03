@@ -75,6 +75,7 @@ public:
             // Take the edge to mst if it does not form a cycle
             if (dsu.find(x) != dsu.find(y)) {
                 dsu.unite(x, y);
+                std::cout << "Edge used is between: " << x << " and " << y << std::endl;
                 ans += w;
             }
         }
